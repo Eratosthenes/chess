@@ -18,12 +18,12 @@ class Board
 
   def switch_position(start_pos, end_pos)
     self[*start_pos].pos = end_pos
-    if self[*end_pos].color.nil?
+    if self[*end_pos].color.nil? # we are moving piece to empty tile
       self[*end_pos].pos = start_pos
       temp = self[*start_pos]
       self[*start_pos] = self[*end_pos]
       self[*end_pos] = temp
-    else
+    else # we are capturing
       self[*end_pos] = self[*start_pos]
       self[*start_pos] = Piece.new(start_pos)
     end

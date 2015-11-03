@@ -25,11 +25,17 @@ class SlidingPiece < Piece
   end
 
   def get_moves(directions)
+    grid = @board.grid
     moves = []
     directions.each do |direction|
-      current_pos = @pos
-
-      @board[*current_pos].is_a?(Piece)
+      current_pos = [@pos[0]+direction[0], @pos[1]+direction[1]]
+      current_piece = grid[current_pos[0]][current_pos[1]]
+      while current_piece.color.nil?
+        moves << current_pos
+        current_pos = [current_pos[0]+direction[0], current_pos[1]+direction[1]]
+      end
+        # if the piece isn't our color, add it to moves
+      # @board[*current_pos].is_a?(Piece)
     end
     moves
   end
@@ -38,7 +44,7 @@ end
 
 class Rook < SlidingPiece
 
-  def get_directions
+  def possible_directions
     @offsets.reject{|x, y| x.abs == y.abs}
   end
 end
