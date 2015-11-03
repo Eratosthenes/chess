@@ -13,21 +13,20 @@ class Board
       raise ArgumentError, "Cannot take your own piece"
     end
 
-    piece = self[*start_pos]
-    nil_piece = self[*end_pos]
-    piece.pos = end_pos
-    nil_piece.pos = start_pos
+    switch_position(start_pos, end_pos)
+  end
 
-    self[*end_pos] = piece
-    self[*start_pos] = nil_piece
-    # self[*start_pos].pos = end_pos
-    # self[*end_pos].pos = start_pos
-    # self[*start_pos], self[*end_pos] = self[*end_pos], self[*start_pos]
-
-    # self[*end_pos] = piece
-    # piece.pos = end_pos
-    # # p self[*start_pos].pos
-    # self[*start_pos] = nil
+  def switch_position(start_pos, end_pos)
+    self[*start_pos].pos = end_pos
+    if self[*end_pos].color.nil?
+      self[*end_pos].pos = start_pos
+      temp = self[*start_pos]
+      self[*start_pos] = self[*end_pos]
+      self[*end_pos] = temp
+    else
+      self[*end_pos] = self[*start_pos]
+      self[*start_pos] = Piece.new(start_pos)
+    end
   end
 
   def populate_board
