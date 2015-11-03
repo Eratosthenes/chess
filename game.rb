@@ -6,6 +6,8 @@ require_relative "sliding_piece"
 require_relative "stepping_piece"
 
 class Game
+  attr_reader :board
+
   def initialize
     @board = Board.new
     @player = Player.new(@board)
@@ -26,5 +28,7 @@ class Game
 end
 
 if __FILE__ == $PROGRAM_NAME
+  # game = Game.new
+  # p game.board[7, 1].moves
   Game.new.run
 end

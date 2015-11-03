@@ -9,9 +9,9 @@ class SlidingPiece < Piece
     original_piece = @board[*@pos]
     @offsets.each do |offset|
       current_pos = [@pos[0] + offset[0], @pos[1] + offset[1]]
-      current_piece = @board[*current_pos]
       while in_bounds?(current_pos)
-        if current_piece.color.nil?
+        current_piece = @board[*current_pos]
+        if current_piece.nil?
           moves << current_pos
         elsif diff_color?(current_piece, original_piece)
           moves << current_pos
@@ -20,7 +20,6 @@ class SlidingPiece < Piece
           break
         end
         current_pos = [current_pos[0]+offset[0], current_pos[1]+offset[1]]
-        current_piece = @board[*current_pos]
       end
     end
     moves

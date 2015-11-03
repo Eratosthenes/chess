@@ -21,39 +21,37 @@ class Board
     # switch_position(start_pos, end_pos)
   end
 
-  # def switch_position(start_pos, end_pos)
-  #   self[*start_pos].pos = end_pos
-  #   if self[*end_pos].color.nil? # we are moving piece to empty tile
-  #     self[*end_pos].pos = start_pos
-  #     temp = self[*start_pos]
-  #     self[*start_pos] = self[*end_pos]
-  #     self[*end_pos] = temp
-  #   else # we are capturing
-  #     self[*end_pos] = self[*start_pos]
-  #     self[*start_pos] = Piece.new(start_pos)
-  #   end
-  # end
-
   def populate_board
     @grid.each.with_index do |row, i|
       row.each.with_index do |col, j|
-        if [0].include?(i)
-          if j == 0 || j == 7
-            self[i, j] = Rook.new([i, j], :black, self)
-          else
-            @grid[i][j] = Piece.new([i, j], :black, self)
-          end
-        elsif [6, 7].include?(i)
-          @grid[i][j] = Piece.new([i, j], :white, self)
+        case
+        when i == 0
+          populate_rows_first_and_last(i,j, :black)
+        when i == 1
+
+        when i == 6
+
+        when i == 7
+          populate_rows_first_and_last(i, j, :white)
         end
       end
     end
 
-    # @grid.each do |row|
-    #   row.each do |el|
-    #     el.board = self if el.is_a?(Piece)
-    #   end
-    # end
+  end
+
+  def populate_rows_first_and_last(i, j, color)
+    case
+    when j == 0 || j == 7
+      @grid[i][j] = Rook.new([i, j], color, self)
+    when j == 1 || j == 6
+      @grid[i][j] = Knight.new([i, j], color, self)
+    when j == 2 || j == 5
+      @grid[i][j] = Bishop.new([i, j], color, self)
+    when j == 3
+      @grid[i][j] = Queen.new([i, j], color, self)
+    when j == 4
+      @grid[i][j] = King.new([i, j], color, self)
+    end
   end
 
   def [](row, col)
