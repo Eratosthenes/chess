@@ -1,6 +1,9 @@
+require_relative "nil_class"
 require_relative "board"
 require_relative "player"
 require_relative "piece"
+require_relative "sliding_piece"
+require_relative "stepping_piece"
 
 class Game
   def initialize
@@ -15,7 +18,7 @@ class Game
         end_pos = @player.move
         @board.move_piece(start_pos, end_pos)
       end
-    rescue => e
+    rescue ArgumentError => e
       puts e
       retry
     end

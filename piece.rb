@@ -1,3 +1,5 @@
+require_relative 'board'
+
 class Piece
   attr_reader :color
   attr_accessor :value, :pos, :board
@@ -13,41 +15,22 @@ class Piece
     @value.to_s
   end
 
-end
-
-class SteppingPiece < Piece
-
-end
-
-class SlidingPiece < Piece
-  def initialize
-    @offsets = [0, 1, -1].repeated_permutation(2).to_a - [0, 0]
+  def in_bounds?(current_pos)
+    current_pos[0].between?(0, 7) && current_pos[1].between?(0, 7)
   end
 
-  def get_moves(directions)
-    grid = @board.grid
-    moves = []
-    directions.each do |direction|
-      current_pos = [@pos[0]+direction[0], @pos[1]+direction[1]]
-      current_piece = grid[current_pos[0]][current_pos[1]]
-      while current_piece.color.nil?
-        moves << current_pos
-        current_pos = [current_pos[0]+direction[0], current_pos[1]+direction[1]]
-      end
-        # if the piece isn't our color, add it to moves
-      # @board[*current_pos].is_a?(Piece)
-    end
-    moves
+  def same_color?(current_piece, other_piece)
+    current_piece.color == other_piece.color
+  end
+
+  def diff_color?(current_piece, other_piece)
+    current_piece.color != other_piece.color
   end
 
 end
 
-class Rook < SlidingPiece
-
-  def possible_directions
-    @offsets.reject{|x, y| x.abs == y.abs}
-  end
-end
-
-class Knight < SteppingPiece
+if __FILE__ == $PROGRAM_NAME
+  b = Board.new
+  rook = Rook.new([0,0], :black, b)
+  p rook.offsets
 end
