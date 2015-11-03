@@ -2,9 +2,6 @@ require_relative 'piece'
 require_relative 'board'
 
 class SteppingPiece < Piece
-  def initialize(pos, color = nil, board = nil)
-    super
-  end
 
   def moves
     moves = []
@@ -33,6 +30,7 @@ class King < SteppingPiece
     @value = :K
     @offsets = [0, 1, -1].repeated_permutation(2).to_a - [[0, 0]]
   end
+
 end
 
 if __FILE__==$PROGRAM_NAME

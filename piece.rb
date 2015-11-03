@@ -27,6 +27,10 @@ class Piece
     current_piece.color != other_piece.color
   end
 
+  def opp_color?(current_piece, other_piece)
+    diff_color?(current_piece, other_piece) && !other_piece.nil?
+  end
+
 end
 
 if __FILE__ == $PROGRAM_NAME

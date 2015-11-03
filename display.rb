@@ -11,7 +11,9 @@ class Display
   end
 
   def display_grid
+  
     system("clear")
+
     grid = @board.grid
     grid.each.with_index do |row, i|
       row.each.with_index do |col, j|
@@ -20,6 +22,13 @@ class Display
       end
       puts
     end
+
+    message
+  end
+
+  def message
+    puts @board.error_message
+    @board.error_message = nil
   end
 
   def colors_for(i, j)

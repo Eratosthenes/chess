@@ -1,24 +1,43 @@
 class Board
-  attr_accessor :grid
-  def initialize
+  attr_accessor :grid, :error_message
+  def initialize(populate = true)
     @grid = Array.new(8) { Array.new(8) }
     # @pieces = pieces
-    populate_board
+    populate_board if populate
   end
 
-  def move_piece(start_pos, end_pos)
+  def in_check?(color)
+    flattened_grid = @grid.flatten.reject{|x| x.nil?}
+    king_piece = flattened_grid.select{|piece| piece.color == color && piece.value == :K}[0]
+    flattened_grid.each do |piece|
+      if king_piece != piece
+        return true if piece.moves.include?(king_piece.pos)
+      end
+    end
+    false
+  end
+
+  def move_piece(start_pos, end_pos, player_color)
     piece = self[*start_pos]
+
     if piece.nil?
-      raise ArgumentError, "Cannot move an empty position"
+      @error_message = "Cannot move an empty position"
+      raise ArgumentError
     elsif self[*end_pos].color == piece.color
-      raise ArgumentError, "Cannot take your own piece"
+      @error_message = "Cannot take your own piece"
+      raise ArgumentError
+    elsif piece.color != player_color
+      @error_message = "Cannot move your opponent's pieces"
+      raise ArgumentError
     elsif piece.moves.include?(end_pos) == false
-      raise ArgumentError, "Can't move there"
+      @error_message = "Invalid move"
+      raise ArgumentError
     end
     self[*end_pos] = piece
     self[*start_pos] = nil
     piece.pos = end_pos
-    # switch_position(start_pos, end_pos)
+
+
   end
 
   def populate_board
@@ -28,9 +47,9 @@ class Board
         when i == 0
           populate_rows_first_and_last(i,j, :black)
         when i == 1
-
+          @grid[i][j] = Pawn.new([i, j], :black, self)
         when i == 6
-
+          @grid[i][j] = Pawn.new([i, j], :white, self)
         when i == 7
           populate_rows_first_and_last(i, j, :white)
         end
