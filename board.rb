@@ -1,5 +1,11 @@
+
+require_relative 'sliding_piece'
+require_relative 'stepping_piece'
+require_relative 'piece'
+
 class Board
   attr_accessor :grid, :error_message
+
   def initialize(populate = true)
     @grid = Array.new(8) { Array.new(8) }
     # @pieces = pieces
@@ -13,6 +19,14 @@ class Board
       if king_piece != piece
         return true if piece.moves.include?(king_piece.pos)
       end
+    end
+    false
+  end
+
+  def checkmate?(color)
+    if in_check?(color)
+      return true if grid.flatten.select{|piece| piece.color == color}
+      .all?{|piece| piece.valid_moves.empty?}
     end
     false
   end
@@ -45,7 +59,7 @@ class Board
       row.each.with_index do |col, j|
         case
         when i == 0
-          populate_rows_first_and_last(i,j, :black)
+          populate_rows_first_and_last(i, j, :black)
         when i == 1
           @grid[i][j] = Pawn.new([i, j], :black, self)
         when i == 6
@@ -85,11 +99,39 @@ class Board
     pos.all? { |x| x.between?(0, 7) }
   end
 
+
+  def dup
+    board_dup = Board.new(false)
+    @grid.each_with_index do |row, i|
+      row.each_with_index do |col, j|
+        if @grid[i][j].nil? == false
+          piece = @grid[i][j]
+          case piece.value
+          when :r
+            board_dup.grid[i][j] = Rook.new([i, j], piece.color, board_dup)
+          when :k
+            board_dup.grid[i][j] = Knight.new([i, j], piece.color, board_dup)
+          when :b
+            board_dup.grid[i][j] = Bishop.new([i, j], piece.color, board_dup)
+          when :q
+            board_dup.grid[i][j] = Queen.new([i, j], piece.color, board_dup)
+          when :K
+            board_dup.grid[i][j] = King.new([i, j], piece.color, board_dup)
+          when :p
+            board_dup.grid[i][j] = Pawn.new([i, j], piece.color, board_dup)
+          end
+        end
+      end
+    end
+    board_dup
+  end
 end
 
 if __FILE__==$PROGRAM_NAME
   b = Board.new
-  p b.grid
-  b.move_piece([0,0],[0, 1])
-  b.display
+  b_dup = b.dup
+
+  p b.grid[0][0].object_id
+  p b_dup.grid[0][0].object_id
+
 end

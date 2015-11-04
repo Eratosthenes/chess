@@ -1,4 +1,5 @@
 require_relative 'board'
+require_relative 'sliding_piece'
 
 class Piece
   attr_reader :color
@@ -9,6 +10,17 @@ class Piece
     @pos = pos
     @value = color.nil? ? ' ' : :p
     @color = color
+  end
+
+  def valid_moves
+    moves.reject{|position| move_into_check?(position)}
+  end
+
+  def move_into_check?(end_pos)
+    #duplicate board and perform the move
+    dup_board = @board.dup
+    dup_board.move_piece(@pos, end_pos, @color)
+    dup_board.in_check?(@color)
   end
 
   def to_s
@@ -34,7 +46,7 @@ class Piece
 end
 
 if __FILE__ == $PROGRAM_NAME
-  b = Board.new
+  b = Board.new(false)
   rook = Rook.new([0,0], :black, b)
-  p rook.offsets
+  p rook.valid_moves
 end

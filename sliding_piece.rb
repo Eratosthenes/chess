@@ -1,3 +1,5 @@
+require_relative 'piece'
+
 class SlidingPiece < Piece
   def initialize(pos, color = nil, board = nil)
     super

@@ -29,18 +29,22 @@ class Game
 
   def run
     begin
-      while true
+      loop do
         # start_pos = @player.move
         # end_pos = @player.move
         @board.move_piece(@current_player.move, @current_player.move, @current_player.color)
 
         switch_players!
-        puts "#{@current_player.color.to_s.capitalize}'s turn"
+        # puts "#{@current_player.color.to_s.capitalize}'s turn"
+        if @board.checkmate?(@current_player.color)
+          break
+        end
         if @board.in_check?(@current_player.color)
           @board.error_message = "CHECK!"
         end
 
       end
+      puts "CHECKMATE. #{@current_player.color.upcase} LOSES."
     rescue ArgumentError => e
       puts e
       retry
